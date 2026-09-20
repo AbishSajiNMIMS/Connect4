@@ -1,4 +1,4 @@
-from game import Connect4, AlphaBetaAgent, HUMAN, AI, ROWS, COLS
+from game import Connect4, AutoSwitchAgent, HUMAN, AI, ROWS, COLS
 
 def print_board(game):
     """Display the board in a human-readable format."""
@@ -30,10 +30,11 @@ def get_human_move(game):
 
 def main():
     game = Connect4()
-    agent = AlphaBetaAgent(depth=5)  # Adjust depth for difficulty
-    
+    agent = AutoSwitchAgent()  # dynamically switches algorithm by game phase
+
     print("🎮 Welcome to Connect 4!")
     print("You are 🔴 (Red), AI is 🟡 (Yellow)")
+    print("The AI switches between algorithms as the game progresses.")
     
     while True:
         print_board(game)
@@ -56,6 +57,11 @@ def main():
         print("AI is thinking...")
         col = agent.get_best_move(game, AI)
         game.drop_piece(col, AI)
+        print(f"🧠 Algorithm used: {agent.last_algorithm}")
+        print(f"   Reason: {agent.last_reason}")
+        if agent.last_stats:
+            stats_str = ", ".join(f"{k}={v}" for k, v in agent.last_stats.items())
+            print(f"   Stats: {stats_str}")
         print(f"AI played column {col}")
         
         if game.winning_move(AI):
